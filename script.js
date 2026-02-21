@@ -9,7 +9,7 @@
 // CONFIGURACIÓN DE WOMPI
 // ============================================
 const WOMPI_CONFIG = {
-    publicKey: 'TU_PUBLIC_KEY_AQUI', // ← REEMPLAZAR CON TU KEY DE WOMPI
+    publicKey: 'pub_test_DL4ffusD85Tg7JATLBFw6PxfoNLekvw4', 
     currency: 'COP',
     amountInCents: 75000000, // $750.000 COP en centavos
     customerId: 'customer_' + Date.now(),
@@ -20,6 +20,7 @@ const WOMPI_CONFIG = {
         descripcion: 'Plan PRO - Automatización PYMES - Primer mes 50% OFF'
     }
 };
+
 
 // ============================================
 // FUNCIÓN DE PAGO WOMPI
@@ -274,4 +275,5 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('%c🤖 AutoMind - Automatización Inteligente', 'color: #2e7d32; font-size: 20px; font-weight: bold;');
     console.log('%c¿Interesado en trabajar con nosotros? ¡Contáctanos!', 'color: #ff6f00; font-size: 14px;');
     console.log('%cWhatsApp: +57 316 043 8031', 'color: #25D366; font-size: 14px;');
+
 });
