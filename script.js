@@ -1,7 +1,7 @@
 /**
  * ============================================
  * AUTO MIND - JAVASCRIPT PRINCIPAL
- * Archivo: js/app.js
+ * Archivo: script.js
  * ============================================
  */
 
@@ -25,15 +25,26 @@ const WOMPI_CONFIG = {
 // ============================================
 // FUNCIÓN DE PAGO WOMPI
 // ============================================
-function openWompiCheckout() {
-    // Verificar si está configurada la key
-    if (WOMPI_CONFIG.publicKey === 'TU_PUBLIC_KEY_AQUI') {
-        document.getElementById('paymentModal').classList.add('active');
+unction openWompiCheckout() {
+    console.log('🔍 Iniciando checkout de Wompi...');
+    
+    // Validar si la key está configurada correctamente
+    if (WOMPI_CONFIG.publicKey === 'TU_PUBLIC_KEY_AQUI' || !WOMPI_CONFIG.publicKey) {
+        console.error('❌ Public Key no configurada');
+        const modal = document.getElementById('paymentModal');
+        if (modal) modal.classList.add('active');
+        return;
+    }
+
+    // Validar que Wompi esté cargado
+    if (!window.Wompi) {
+        console.error('❌ Wompi widget no está cargado');
+        alert('Cargando sistema de pagos... Espera 5 segundos y recarga la página.');
         return;
     }
 
     // Abrir checkout de Wompi
-    if (window.Wompi) {
+    try {
         window.Wompi.openCheckout({
             publicKey: WOMPI_CONFIG.publicKey,
             currency: WOMPI_CONFIG.currency,
@@ -43,8 +54,10 @@ function openWompiCheckout() {
             redirectUrl: WOMPI_CONFIG.redirectUrl,
             metadata: WOMPI_CONFIG.metadata
         });
-    } else {
-        alert('Error: No se pudo cargar el sistema de pagos. Por favor recarga la página.');
+        console.log('✅ Checkout abierto correctamente');
+    } catch (error) {
+        console.error('❌ Error al abrir Wompi:', error);
+        alert('Error al procesar el pago. Intenta nuevamente.');
     }
 }
 
@@ -277,3 +290,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('%cWhatsApp: +57 316 043 8031', 'color: #25D366; font-size: 14px;');
 
 });
+
