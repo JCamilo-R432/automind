@@ -306,25 +306,26 @@ document.addEventListener('DOMContentLoaded', function() {
 // FUNCIÓN DE PAGO WOMPI
 // ============================================
 function openWompiCheckout() {
-    console.log('🔍 Iniciando checkout de Wompi...');
+    console.log('🔍 Iniciando checkout...');
+    console.log('Public Key:', WOMPI_CONFIG.publicKey);
     
-    // Validar si la key está configurada correctamente
+    // ✅ VALIDACIÓN CORRECTA: Si es el placeholder → mostrar modal
     if (WOMPI_CONFIG.publicKey === 'TU_PUBLIC_KEY_AQUI' || !WOMPI_CONFIG.publicKey) {
-        console.error('❌ Public Key no configurada');
+        console.error('❌ Public Key no configurada correctamente');
         const modal = document.getElementById('paymentModal');
         if (modal) modal.classList.add('active');
         return;
     }
 
-    // Validar que Wompi esté cargado
+    // ✅ Si llegamos aquí, la key es válida → abrir Wompi
     if (!window.Wompi) {
-        console.error('❌ Wompi widget no está cargado');
-        alert('Cargando sistema de pagos... Espera 5 segundos y recarga la página.');
+        console.error('❌ Wompi no está cargado');
+        alert('Cargando sistema de pagos... Recarga la página.');
         return;
     }
 
-    // Abrir checkout de Wompi
     try {
+        console.log('✅ Abriendo checkout de Wompi...');
         window.Wompi.openCheckout({
             publicKey: WOMPI_CONFIG.publicKey,
             currency: WOMPI_CONFIG.currency,
@@ -334,10 +335,9 @@ function openWompiCheckout() {
             redirectUrl: WOMPI_CONFIG.redirectUrl,
             metadata: WOMPI_CONFIG.metadata
         });
-        console.log('✅ Checkout abierto correctamente');
     } catch (error) {
-        console.error('❌ Error al abrir Wompi:', error);
-        alert('Error al procesar el pago. Intenta nuevamente.');
+        console.error('❌ Error:', error);
+        alert('Error al abrir el pago.');
     }
 }
 
@@ -592,3 +592,4 @@ window.trackCustomEvent = function(eventName, eventData = {}) {
         console.warn('⚠️ gtag no está disponible:', eventName, eventData);
     }
 };
+
