@@ -8,6 +8,32 @@
 // ============================================
 // CONFIGURACIÓN DE WOMPI
 // ============================================
+
+
+// ============================================
+// ESPERAR A QUE WOMPI CARGUE
+// ============================================
+function waitForWompi(maxAttempts = 20) {
+    return new Promise((resolve) => {
+        let attempts = 0;
+        const checkWompi = setInterval(() => {
+            attempts++;
+            console.log(`⏳ Esperando Wompi... intento ${attempts}/${maxAttempts}`);
+            
+            if (window.Wompi) {
+                console.log('✅ Wompi cargado correctamente!');
+                clearInterval(checkWompi);
+                resolve(true);
+            } else if (attempts >= maxAttempts) {
+                console.error('❌ Wompi no cargó después de', maxAttempts * 0.5, 'segundos');
+                clearInterval(checkWompi);
+                resolve(false);
+            }
+        }, 500);
+    });
+}
+
+
 const WOMPI_CONFIG = {
     publicKey: 'pub_test_DL4ffusD85Tg7JATLBFw6PxfoNLekvw4', 
     currency: 'COP',
@@ -24,9 +50,18 @@ const WOMPI_CONFIG = {
 // ============================================
 // FUNCIÓN DE PAGO WOMPI
 // ============================================
-function openWompiCheckout() {
+async function openWompiCheckout() {
     console.log('🔍 Iniciando checkout...');
     console.log('Public Key:', WOMPI_CONFIG.publicKey);
+    
+    // Esperar a que Wompi cargue
+    const wompiLoaded = await waitForWompi();
+    
+    if (!wompiLoaded) {
+        console.error('❌ Wompi no está disponible');
+        alert('Error: El sistema de pagos no cargó. Recarga la página o intenta en unos segundos.');
+        return;
+    }
     
     if (WOMPI_CONFIG.publicKey === 'TU_PUBLIC_KEY_AQUI' || !WOMPI_CONFIG.publicKey) {
         console.error('❌ Public Key no configurada correctamente');
@@ -35,14 +70,15 @@ function openWompiCheckout() {
         return;
     }
 
-    if (!window.Wompi) {
-        console.error('❌ Wompi no está cargado');
-        alert('Cargando sistema de pagos... Recarga la página.');
-        return;
-    }
-
     try {
         console.log('✅ Abriendo checkout de Wompi...');
+        console.log('Config:', {
+            publicKey: WOMPI_CONFIG.publicKey,
+            currency: WOMPI_CONFIG.currency,
+            amountInCents: WOMPI_CONFIG.amountInCents,
+            reference: WOMPI_CONFIG.reference
+        });
+        
         window.Wompi.openCheckout({
             publicKey: WOMPI_CONFIG.publicKey,
             currency: WOMPI_CONFIG.currency,
@@ -247,4 +283,5 @@ window.trackCustomEvent = function(eventName, eventData = {}) {
         console.warn('⚠️ gtag no está disponible:', eventName, eventData);
     }
 };
+
 
