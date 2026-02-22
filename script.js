@@ -21,57 +21,6 @@ const WOMPI_CONFIG = {
     }
 };
 
-// ============================================
-// FUNCIÓN DE PAGO WOMPI
-// ============================================
-// ============================================
-// FUNCIÓN DE PAGO WOMPI (CORREGIDA)
-// ============================================
-function openWompiCheckout() {
-    console.log('🔍 Iniciando checkout de Wompi...');
-    console.log('Public Key:', WOMPI_CONFIG.publicKey);
-    
-    // Validar si la key está configurada correctamente
-    if (WOMPI_CONFIG.publicKey === 'TU_PUBLIC_KEY_AQUI' || !WOMPI_CONFIG.publicKey) {
-        console.error('❌ Public Key no configurada');
-        const modal = document.getElementById('paymentModal');
-        if (modal) modal.classList.add('active');
-        return;
-    }
-
-    // Validar que Wompi esté cargado
-    if (!window.Wompi) {
-        console.error('❌ Wompi widget no está cargado en window.Wompi');
-        alert('Cargando sistema de pagos... Espera 5 segundos y recarga la página.');
-        return;
-    }
-
-    // Validar parámetros
-    console.log('📦 Parámetros a enviar:', {
-        publicKey: WOMPI_CONFIG.publicKey,
-        currency: WOMPI_CONFIG.currency,
-        amountInCents: WOMPI_CONFIG.amountInCents,
-        reference: WOMPI_CONFIG.reference
-    });
-
-    // Abrir checkout de Wompi
-    try {
-        window.Wompi.openCheckout({
-            publicKey: WOMPI_CONFIG.publicKey,
-            currency: WOMPI_CONFIG.currency,
-            amountInCents: WOMPI_CONFIG.amountInCents,
-            reference: WOMPI_CONFIG.reference,
-            customerId: WOMPI_CONFIG.customerId,
-            redirectUrl: WOMPI_CONFIG.redirectUrl,
-            metadata: WOMPI_CONFIG.metadata
-        });
-        console.log('✅ Checkout abierto correctamente');
-    } catch (error) {
-        console.error('❌ Error al abrir Wompi:', error);
-        alert('Error al procesar el pago. Intenta nuevamente.');
-    }
-}
-
 function closeModal() {
     document.getElementById('paymentModal').classList.remove('active');
 }
@@ -592,4 +541,5 @@ window.trackCustomEvent = function(eventName, eventData = {}) {
         console.warn('⚠️ gtag no está disponible:', eventName, eventData);
     }
 };
+
 
