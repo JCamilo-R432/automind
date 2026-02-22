@@ -30,7 +30,6 @@
         gtag('config', 'G-RXG3EZNRMT');
     </script>
 </head>
-</head>
 <body>
     <!-- Navegación -->
     <nav class="navbar" id="navbar">
@@ -209,7 +208,7 @@
             <ol style="text-align: left; margin: 20px auto; max-width: 400px; line-height: 2;">
                 <li>Registrarte en <strong>wompi.co</strong></li>
                 <li>Obtener tu <strong>Public Key</strong></li>
-                <li>Reemplazarla en el archivo <code>js/app.js</code></li>
+                <li>Reemplazarla en el archivo <code>script.js</code></li>
             </ol>
             <div class="modal-buttons">
                 <button class="btn btn-primary" id="goToWompi">
@@ -220,7 +219,7 @@
         </div>
     </div>
 
-    <!-- Chatwoot Widget -->
+    <!-- Chatwoot Widget (SIN ESPACIOS) -->
     <script>
         (function(d, t) {
             var BASE_URL = "https://chatwoot.econify.store";
@@ -237,6 +236,8 @@
             }
         })(document, "script");
     </script>
+
+    <!-- Script principal (SOLO UNO, CON defer) -->
     <script src="script.js" defer></script>
 </body>
 </html>
