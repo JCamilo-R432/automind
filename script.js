@@ -11,7 +11,7 @@
 const WOMPI_CONFIG = {
     publicKey: 'pub_test_DL4ffusD85Tg7JATLBFw6PxfoNLekvw4', 
     currency: 'COP',
-    amountInCents: 75000000, // $750.000 COP en centavos
+    amountInCents: 75000000,
     customerId: 'customer_' + Date.now(),
     reference: 'PLAN_PRO_' + new Date().toISOString().slice(0,10),
     redirectUrl: window.location.href,
@@ -21,236 +21,6 @@ const WOMPI_CONFIG = {
     }
 };
 
-function closeModal() {
-    document.getElementById('paymentModal').classList.remove('active');
-}
-
-// ============================================
-// INICIALIZACIÓN DEL DOM
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // ============================================
-    // EVENT LISTENERS PARA MODAL
-    // ============================================
-    const paymentModal = document.getElementById('paymentModal');
-    const closeModalBtn = document.getElementById('closeModal');
-    const goToWompiBtn = document.getElementById('goToWompi');
-    const wompiButton = document.getElementById('wompiButton');
-
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeModal);
-    }
-
-    if (paymentModal) {
-        paymentModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-    }
-
-    if (goToWompiBtn) {
-        goToWompiBtn.addEventListener('click', function() {
-            window.open('https://wompi.co', '_blank');
-        });
-    }
-
-    if (wompiButton) {
-        wompiButton.addEventListener('click', openWompiCheckout);
-    }
-
-    // ============================================
-    // NAVEGACIÓN RESPONSIVE
-    // ============================================
-    const navbarToggle = document.getElementById('navbarToggle');
-    const navbarMenu = document.getElementById('navbarMenu');
-    const navbar = document.getElementById('navbar');
-
-    if (navbarToggle && navbarMenu) {
-        navbarToggle.addEventListener('click', function() {
-            navbarToggle.classList.toggle('active');
-            navbarMenu.classList.toggle('active');
-        });
-
-        // Cerrar menú al hacer click en un enlace
-        document.querySelectorAll('.navbar-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navbarToggle.classList.remove('active');
-                navbarMenu.classList.remove('active');
-            });
-        });
-    }
-
-    // Efecto scroll en navbar
-    window.addEventListener('scroll', function() {
-        if (navbar) {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        }
-    });
-
-    // ============================================
-    // ANIMACIONES DE FEATURES
-    // ============================================
-    const featureCards = document.querySelectorAll('.feature-card');
-
-    featureCards.forEach(card => {
-        card.addEventListener('click', function() {
-            // Remover active de todos
-            featureCards.forEach(c => c.classList.remove('active'));
-            // Agregar active al actual
-            this.classList.add('active');
-            
-            // Animar lista items
-            const items = this.querySelectorAll('.feature-list li');
-            items.forEach((item, index) => {
-                item.classList.remove('show');
-                setTimeout(() => {
-                    item.classList.add('show');
-                }, index * 100);
-            });
-        });
-
-        // Trigger inicial
-        const items = card.querySelectorAll('.feature-list li');
-        items.forEach((item, index) => {
-            setTimeout(() => {
-                item.classList.add('show');
-            }, index * 100);
-        });
-    });
-
-    // ============================================
-    // WHATSAPP FLOAT
-    // ============================================
-    const whatsappFloat = document.getElementById('whatsappFloat');
-    const whatsappTooltip = document.getElementById('whatsappTooltip');
-
-    setTimeout(() => {
-        if (whatsappFloat) {
-            whatsappFloat.classList.add('show');
-        }
-        
-        setTimeout(() => {
-            if (whatsappTooltip) {
-                whatsappTooltip.classList.add('show');
-                
-                setTimeout(() => {
-                    if (whatsappTooltip) {
-                        whatsappTooltip.classList.remove('show');
-                    }
-                }, 5000);
-            }
-        }, 1000);
-    }, 800);
-
-    // ============================================
-    // SCROLL SUAVE PARA ANCLAS
-    // ============================================
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target && navbar) {
-                const navbarHeight = navbar.offsetHeight;
-                const targetPosition = target.offsetTop - navbarHeight;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // ============================================
-    // INTERSECTION OBSERVER PARA ANIMACIONES
-    // ============================================
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-
-    // Observar elementos para animar
-    document.querySelectorAll('.feature-card, .roi-section, .payment-section, .contact-section').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'all 0.6s ease-out';
-        observer.observe(el);
-    });
-
-    // ============================================
-    // TRACKING DE ANALYTICS (Opcional)
-    // ============================================
-    function trackEvent(eventName, eventData = {}) {
-        console.log('📊 Event tracked:', eventName, eventData);
-        // Aquí puedes integrar Google Analytics, Facebook Pixel, etc.
-        // gtag('event', eventName, eventData);
-    }
-
-    // Track clicks en botones
-    document.querySelectorAll('.btn, .btn-wompi, .contact-link').forEach(button => {
-        button.addEventListener('click', function() {
-            trackEvent('button_click', {
-                button: this.textContent.trim(),
-                url: this.href || '#'
-            });
-        });
-    });
-
-    // ============================================
-    // DETECCIÓN DE DISPOSITIVO
-    // ============================================
-    function isMobile() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    }
-
-    if (isMobile()) {
-        document.body.classList.add('mobile-device');
-    }
-
-    // ============================================
-    // LAZY LOADING PARA IMÁGENES (si las agregas)
-    // ============================================
-    const lazyImages = document.querySelectorAll('img[data-src]');
-    
-    if (lazyImages.length > 0) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                    observer.unobserve(img);
-                }
-            });
-        });
-
-        lazyImages.forEach(img => imageObserver.observe(img));
-    }
-
-    // ============================================
-    // MENSAJE DE BIENVENIDA EN CONSOLA
-    // ============================================
-    console.log('%c🤖 AutoMind - Automatización Inteligente', 'color: #2e7d32; font-size: 20px; font-weight: bold;');
-    console.log('%c¿Interesado en trabajar con nosotros? ¡Contáctanos!', 'color: #ff6f00; font-size: 14px;');
-    console.log('%cWhatsApp: +57 316 043 8031', 'color: #25D366; font-size: 14px;');
-});
-
-
 // ============================================
 // FUNCIÓN DE PAGO WOMPI
 // ============================================
@@ -258,7 +28,6 @@ function openWompiCheckout() {
     console.log('🔍 Iniciando checkout...');
     console.log('Public Key:', WOMPI_CONFIG.publicKey);
     
-    // ✅ VALIDACIÓN CORRECTA: Si es el placeholder → mostrar modal
     if (WOMPI_CONFIG.publicKey === 'TU_PUBLIC_KEY_AQUI' || !WOMPI_CONFIG.publicKey) {
         console.error('❌ Public Key no configurada correctamente');
         const modal = document.getElementById('paymentModal');
@@ -266,7 +35,6 @@ function openWompiCheckout() {
         return;
     }
 
-    // ✅ Si llegamos aquí, la key es válida → abrir Wompi
     if (!window.Wompi) {
         console.error('❌ Wompi no está cargado');
         alert('Cargando sistema de pagos... Recarga la página.');
@@ -291,17 +59,16 @@ function openWompiCheckout() {
 }
 
 function closeModal() {
-    document.getElementById('paymentModal').classList.remove('active');
+    const modal = document.getElementById('paymentModal');
+    if (modal) modal.classList.remove('active');
 }
 
 // ============================================
-// INICIALIZACIÓN DEL DOM
+// INICIALIZACIÓN DEL DOM (SOLO UNA VEZ)
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ============================================
-    // EVENT LISTENERS PARA MODAL
-    // ============================================
+    // --- EVENT LISTENERS PARA MODAL ---
     const paymentModal = document.getElementById('paymentModal');
     const closeModalBtn = document.getElementById('closeModal');
     const goToWompiBtn = document.getElementById('goToWompi');
@@ -313,15 +80,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (paymentModal) {
         paymentModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
+            if (e.target === this) closeModal();
         });
     }
 
     if (goToWompiBtn) {
         goToWompiBtn.addEventListener('click', function() {
-            window.open('https://wompi.co', '_blank');
+            window.open('https://wompi.co', '_blank'); // ✅ SIN ESPACIOS
         });
     }
 
@@ -329,9 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wompiButton.addEventListener('click', openWompiCheckout);
     }
 
-    // ============================================
-    // NAVEGACIÓN RESPONSIVE
-    // ============================================
+    // --- NAVEGACIÓN RESPONSIVE ---
     const navbarToggle = document.getElementById('navbarToggle');
     const navbarMenu = document.getElementById('navbarMenu');
     const navbar = document.getElementById('navbar');
@@ -342,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
             navbarMenu.classList.toggle('active');
         });
 
-        // Cerrar menú al hacer click en un enlace
         document.querySelectorAll('.navbar-menu a').forEach(link => {
             link.addEventListener('click', () => {
                 navbarToggle.classList.remove('active');
@@ -351,99 +113,61 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Efecto scroll en navbar
+    // --- EFECTO SCROLL EN NAVBAR ---
     window.addEventListener('scroll', function() {
         if (navbar) {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
         }
     });
 
-    // ============================================
-    // ANIMACIONES DE FEATURES
-    // ============================================
+    // --- ANIMACIONES DE FEATURES ---
     const featureCards = document.querySelectorAll('.feature-card');
-
     featureCards.forEach(card => {
         card.addEventListener('click', function() {
-            // Remover active de todos
             featureCards.forEach(c => c.classList.remove('active'));
-            // Agregar active al actual
             this.classList.add('active');
-            
-            // Animar lista items
             const items = this.querySelectorAll('.feature-list li');
             items.forEach((item, index) => {
                 item.classList.remove('show');
-                setTimeout(() => {
-                    item.classList.add('show');
-                }, index * 100);
+                setTimeout(() => item.classList.add('show'), index * 100);
             });
         });
-
-        // Trigger inicial
         const items = card.querySelectorAll('.feature-list li');
         items.forEach((item, index) => {
-            setTimeout(() => {
-                item.classList.add('show');
-            }, index * 100);
+            setTimeout(() => item.classList.add('show'), index * 100);
         });
     });
 
-    // ============================================
-    // WHATSAPP FLOAT
-    // ============================================
+    // --- WHATSAPP FLOAT ---
     const whatsappFloat = document.getElementById('whatsappFloat');
     const whatsappTooltip = document.getElementById('whatsappTooltip');
 
     setTimeout(() => {
-        if (whatsappFloat) {
-            whatsappFloat.classList.add('show');
-        }
-        
+        if (whatsappFloat) whatsappFloat.classList.add('show');
         setTimeout(() => {
             if (whatsappTooltip) {
                 whatsappTooltip.classList.add('show');
-                
                 setTimeout(() => {
-                    if (whatsappTooltip) {
-                        whatsappTooltip.classList.remove('show');
-                    }
+                    if (whatsappTooltip) whatsappTooltip.classList.remove('show');
                 }, 5000);
             }
         }, 1000);
     }, 800);
 
-    // ============================================
-    // SCROLL SUAVE PARA ANCLAS
-    // ============================================
+    // --- SCROLL SUAVE PARA ANCLAS ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target && navbar) {
-                const navbarHeight = navbar.offsetHeight;
-                const targetPosition = target.offsetTop - navbarHeight;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+                const targetPosition = target.offsetTop - navbar.offsetHeight;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
             }
         });
     });
 
-    // ============================================
-    // INTERSECTION OBSERVER PARA ANIMACIONES
-    // ============================================
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
+    // --- INTERSECTION OBSERVER PARA ANIMACIONES ---
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -453,7 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, observerOptions);
 
-    // Observar elementos para animar
     document.querySelectorAll('.feature-card, .roi-section, .payment-section, .contact-section').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
@@ -461,11 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
-    // ============================================
-    // TRACKING DE ANALYTICS
-    // ============================================
+    // --- TRACKING DE ANALYTICS ---
     function trackEvent(eventName, eventData = {}) {
-        // Verificar si Google Analytics está disponible
         if (typeof gtag !== 'undefined') {
             gtag('event', eventName, eventData);
             console.log('📊 Event tracked:', eventName, eventData);
@@ -474,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Track clicks en botones
     document.querySelectorAll('.btn, .btn-wompi, .contact-link').forEach(button => {
         button.addEventListener('click', function() {
             trackEvent('button_click', {
@@ -484,22 +203,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // ============================================
-    // DETECCIÓN DE DISPOSITIVO
-    // ============================================
-    function isMobile() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    }
-
-    if (isMobile()) {
+    // --- DETECCIÓN DE DISPOSITIVO ---
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         document.body.classList.add('mobile-device');
     }
 
-    // ============================================
-    // LAZY LOADING PARA IMÁGENES
-    // ============================================
+    // --- LAZY LOADING PARA IMÁGENES ---
     const lazyImages = document.querySelectorAll('img[data-src]');
-    
     if (lazyImages.length > 0) {
         const imageObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
@@ -511,20 +221,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
-
         lazyImages.forEach(img => imageObserver.observe(img));
     }
 
-    // ============================================
-    // MENSAJE DE BIENVENIDA EN CONSOLA
-    // ============================================
+    // --- MENSAJE DE BIENVENIDA EN CONSOLA ---
     console.log('%c🤖 AutoMind - Automatización Inteligente', 'color: #2e7d32; font-size: 20px; font-weight: bold;');
     console.log('%c¿Interesado en trabajar con nosotros? ¡Contáctanos!', 'color: #ff6f00; font-size: 14px;');
     console.log('%cWhatsApp: +57 316 043 8031', 'color: #25D366; font-size: 14px;');
     
-    // Verificar si Wompi está configurado
     if (WOMPI_CONFIG.publicKey === 'TU_PUBLIC_KEY_AQUI') {
-        console.warn('⚠️ Wompi: Debes configurar tu Public Key en js/app.js');
+        console.warn('⚠️ Wompi: Debes configurar tu Public Key en script.js');
     } else {
         console.log('✅ Wompi: Public Key configurada correctamente');
     }
@@ -541,5 +247,4 @@ window.trackCustomEvent = function(eventName, eventData = {}) {
         console.warn('⚠️ gtag no está disponible:', eventName, eventData);
     }
 };
-
 
